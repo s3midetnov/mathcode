@@ -71,9 +71,12 @@ else
                         (2^(params.k3) * params.b23) * (x2 * x3) );
                         
         if not IsZero(check_val) then
-            Print("\n[FAIL] Output is False for parameters: ", clean_line);
+            Print("\n [FALSE] THE ELEMENT IS NON-ZERO MOD LCS WITH PARAMETERS: ", clean_line);
+        else
+            # Added condition for when the element is 0 mod LCS
+            Print("\n[TRUE] element is zero mod lcs with parameters: ", clean_line);
         fi;
-        
+
         # Print progress
         if line_num mod 10 = 0 then
             Print("\rProcessing line ", line_num, " ...");

@@ -1,25 +1,44 @@
 import ast
 import subprocess
+import random
 
 def main():
+    is_randomized = True
+    # Distribution parameters (control over random distribution)
+    k_min, k_max = 1, 10
+    a_min, a_max = -5, 5
+
     with open("input.txt", "w") as f:
         f.write("")
-    print("insert values for k1, k2, k3, a11, a12, a13, a21, a22, a23, a31, a32, a33 (comma-separated)\n original Rips example (for tests) is : 2,4,6,0,-1,-2,1,0,-4,2,4,0 \n ")
-    input_str = input()
-    try:
-        a_vals = [int(x.strip()) for x in input_str.split(",")]
-    except ValueError:
-        print("Invalid input: Please enter 12 integers separated by commas.")
-        return
 
-    if len(a_vals) != 12:
-        print(f"Expected 12 values, got {len(a_vals)}.")
-        return
+    k1, k2, k3, a11, a12, a13,a21, a22, a23, a31, a32, a33 =  [0] * 12
+    if not is_randomized:
+        print("insert values for k1, k2, k3, a11, a12, a13, a21, a22, a23, a31, a32, a33 (comma-separated)\n original Rips example (for tests) is : 2,4,6,0,-1,-2,1,0,-4,2,4,0 \n ")
+        input_str = input()
+        try:
+            a_vals = [int(x.strip()) for x in input_str.split(",")]
+        except ValueError:
+            print("Invalid input: Please enter 12 integers separated by commas.")
+            return
 
-    k1, k2, k3 = a_vals[0:3]
-    a11, a12, a13 = a_vals[3:6]
-    a21, a22, a23 = a_vals[6:9]
-    a31, a32, a33 = a_vals[9:12]
+        if len(a_vals) != 12:
+            print(f"Expected 12 values, got {len(a_vals)}.")
+            return
+
+        k1, k2, k3 = a_vals[0:3]
+        a11, a12, a13 = a_vals[3:6]
+        a21, a22, a23 = a_vals[6:9]
+        a31, a32, a33 = a_vals[9:12]
+
+    if is_randomized:
+        k1 = random.randint(k_min, k_max - 4)
+        k2 = random.randint(k1 + 2, k_max - 2)
+        k3 = random.randint(k2 + 2, k_max)
+        a11, a12, a13 = [random.randint(a_min, a_max) for _ in range(3)]
+        a21, a22, a23 = [random.randint(a_min, a_max) for _ in range(3)]
+        a31, a32, a33 = [random.randint(a_min, a_max) for _ in range(3)]
+        print(f"Randomized values: k1 = {k1}, k2 = {k2}, k3 = {k3}, \n a11 = {a11}, a12 = {a12}, a13 = {a13}, \n a21 = {a21}, a22 = {a22}, a23 = {a23},\n a31 = {a31}, a32 = {a32}, a33 = {a33}")
+
 
     # Construct the matrix 'a' for GAP
     gap_a = f"[[{a11},{a12},{a13}],[{a21},{a22},{a23}],[{a31},{a32},{a33}]]"
