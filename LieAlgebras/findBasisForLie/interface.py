@@ -3,7 +3,7 @@ import subprocess
 import random
 
 def main():
-    is_randomized = True
+    is_randomized = False
     # Distribution parameters (control over random distribution)
     k_min, k_max = 1, 10
     a_min, a_max = -5, 5

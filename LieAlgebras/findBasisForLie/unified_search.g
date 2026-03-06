@@ -48,7 +48,7 @@ L := FreeLieRing(Integers, ["x1", "x2", "x3", "x4"]);
 x1 := L.x1; x2 := L.x2; x3 := L.x3; x4 := L.x4;
 
 # 3. Search parameters
-k_min := 2; k_max := 10;
+k_min := 3; k_max := 9;
 a_min := -5; a_max := 5;
 
 found_false := false;
@@ -65,10 +65,18 @@ while not found_false do
     k2 := Random([k1 + 2 .. k_max - 2]);
     k3 := Random([k2 + 2 .. k_max]);
 
+    #a := [
+    #    [Random([a_min .. a_max]), Random([a_min .. a_max]), Random([a_min .. a_max])],
+    #    [Random([a_min .. a_max]), Random([a_min .. a_max]), Random([a_min .. a_max])],
+    #    [Random([a_min .. a_max]), Random([a_min .. a_max]), Random([a_min .. a_max])]
+    #];
+    aa12 := Random([a_min .. a_max]);
+    aa13 := Random([a_min .. a_max]);
+    aa23 := Random([a_min .. a_max]);
     a := [
-        [Random([a_min .. a_max]), Random([a_min .. a_max]), Random([a_min .. a_max])],
-        [Random([a_min .. a_max]), Random([a_min .. a_max]), Random([a_min .. a_max])],
-        [Random([a_min .. a_max]), Random([a_min .. a_max]), Random([a_min .. a_max])]
+        [0, aa12, aa13],
+        [aa12, 0, aa23],
+        [aa13, aa23, 0]
     ];
 
     Print("\n--- Iteration ", iterations, " ---\n");
