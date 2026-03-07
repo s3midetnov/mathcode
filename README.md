@@ -1,27 +1,27 @@
-# README: some math-related code
+# MathCode: Collections of Mathematical Computations
 
-## braidGroups
-Some computations in the braid groups. 
-The folder "dehornoy" contains a copy of the repo https://github.com/abhikpal/dehornoy with an implementation of the Dehornoy reduction algorithm.
-This serves as a way to solve word problem in the braid group.
-Other notebooks contain SageMath code for some other computations.
+This repository contains a collection of scripts, notebooks, and programs for various mathematical computations, including group theory, Lie algebras, and symbolic algebra.
 
-## commutators
-The file commutators.py builds Mal'tsev bases iteratively. 
-The notebook contains some examples.
+## Braid Groups (`braidGroups/`)
+Computations related to braid groups.
+- `dehornoy/`: Implementation of the Dehornoy reduction algorithm (word problem solver). This is a copy of [abhikpal/dehornoy](https://github.com/abhikpal/dehornoy).
+- SageMath notebooks for other braid group computations.
 
-## LieAlgebras
-The folder gapLieRingCompute contains a file that reads the file input.txt and tells whether some element is (non-)zero in the nilpotent quotient of a specific Lie algebra defined by the read data.
-The folder iterateRipsElements contains a python script that creates a lot of examples of (k1, k2, k3, a11, ..., a33, b12, b23, b13) satisfying conditions that the corresponding element lies in D_4. 
-The folder findBasisForLie contains a script isZeroModLCS.g which is a version of gapLieRingCompute/process.g, a script findBasisCongruences.g which finds a basis for subgroup of Z^3 defined by a set of congruences, 
-a script interface.py which allows to apply iteratively the two scripts above and the file unified_search.g which is a version of the script interface.py but full in gap. 
+## Commutators (`commutators/`)
+- `commutators.py`: Iteratively builds Mal'tsev bases.
+- `usecommutators.ipynb`: Examples and usage.
 
-N.B. Usage of gap is via 
-```bash
-\gap -q -b unified_search.g
-```
-(on MacOS). 
+## Lie Algebras (`LieAlgebras/`)
+- `gapLieRingCompute/`: Checks if elements are (non-)zero in nilpotent quotients of specific Lie algebras.
+- `iterateRipsElements/`: Python script for generating examples satisfying certain conditions in $D_4$.
+- `findBasisForLie/`: GAP and Python scripts for finding bases and working with congruences in Lie algebras.
+    - Usage (on macOS): `\gap -q -b unified_search.g`
 
-## symmetricGroupRing
-Contains some SageMath code for computations in the symmetric group ring.
+## Symmetric Group Ring (`symmetricGroupRing/`)
+- SageMath code for computations within the symmetric group ring.
+
+## Other Utilities
+- `freegroup.py`: Basic implementation of free group word reduction and automorphisms.
+- `automorphismspi1S2.py`: Specific automorphism definitions and projections.
+- `sudokuGraphs/`: Exploration of Sudoku-related graphs.
 
