@@ -48,7 +48,7 @@ L := FreeLieRing(Integers, ["x1", "x2", "x3", "x4"]);
 x1 := L.x1; x2 := L.x2; x3 := L.x3; x4 := L.x4;
 
 # 3. Search parameters
-k_min := 3; k_max := 9;
+k_min := 3; k_max := 7;
 a_min := -5; a_max := 5;
 
 found_false := false;
