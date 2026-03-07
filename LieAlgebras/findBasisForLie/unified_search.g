@@ -1,5 +1,7 @@
 LoadPackage("liering");
 
+Reset(GlobalMersenneTwister, 876543);
+
 # 1. Define the function to find the subgroup basis
 FindSubgroupBasis := function(k1, k2, k3, a)
     local C, M, W, W_trans, N, N_sub, basis, i;
@@ -48,14 +50,13 @@ L := FreeLieRing(Integers, ["x1", "x2", "x3", "x4"]);
 x1 := L.x1; x2 := L.x2; x3 := L.x3; x4 := L.x4;
 
 # 3. Search parameters
-k_min := 4; k_max := 8;
-a_min := -5; a_max := 5;
+k_min := 4; k_max := 15;
+a_min := -12; a_max := 12;
 
 found_false := false;
 iterations := 0;
 
 Print("Starting randomized search...\n");
-
 # 4. Main Search Loop
 while not found_false do
     iterations := iterations + 1;
@@ -65,11 +66,6 @@ while not found_false do
     k2 := Random([k1 + 2 .. k_max - 2]);
     k3 := Random([k2 + 2 .. k_max]);
 
-    #a := [
-    #    [Random([a_min .. a_max]), Random([a_min .. a_max]), Random([a_min .. a_max])],
-    #    [Random([a_min .. a_max]), Random([a_min .. a_max]), Random([a_min .. a_max])],
-    #    [Random([a_min .. a_max]), Random([a_min .. a_max]), Random([a_min .. a_max])]
-    #];
     aa12 := Random([a_min .. a_max]);
     aa13 := Random([a_min .. a_max]);
     aa23 := Random([a_min .. a_max]);
@@ -88,6 +84,13 @@ while not found_false do
     # Find the basis
     basis := FindSubgroupBasis(k1, k2, k3, a);
     Print("Output from GAP for basis:\n", basis, "\n");
+
+    # --- NEW: Check if the basis is diagonal and skip if true ---
+    if IsDiagonalMat(basis) then
+        Print("Basis is diagonal. Skipping this example...\n");
+        continue;
+    fi;
+    # ------------------------------------------------------------
 
     # Iterate through the elements of the found basis
     for basic_element in basis do
