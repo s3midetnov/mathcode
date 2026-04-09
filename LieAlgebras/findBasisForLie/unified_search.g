@@ -50,44 +50,49 @@ L := FreeLieRing(Integers, ["x1", "x2", "x3", "x4"]);
 x1 := L.x1; x2 := L.x2; x3 := L.x3; x4 := L.x4;
 
 # 3. Search parameters
-k_min := 4; k_max := 15;
+k_min := 3; k_max := 15;
 a_min := -12; a_max := 12;
 
 found_false := false;
 iterations := 0;
+successes := 40;
 
 Print("Starting randomized search...\n");
 # 4. Main Search Loop
 while not found_false do
     iterations := iterations + 1;
-
+    Print("Iteration ", iterations);
+    if iterations > 100 then
+        Print("a lot of iterations");
+        break;
+    fi;
     # Generate random parameters
-    k1 := Random([k_min .. k_max - 4]);
+    k1 := 2; #Random([k_min .. k_max - 4]);
     k2 := Random([k1 + 2 .. k_max - 2]);
     k3 := Random([k2 + 2 .. k_max]);
 
-    aa12 := Random([a_min .. a_max]);
-    aa13 := Random([a_min .. a_max]);
-    aa23 := Random([a_min .. a_max]);
+    aa12 := 1; # 2 * Random([-5,-3,-1,1,3,5,7]); #Random([a_min .. a_max]); # 1;
+    aa13 := -2; # * Random([-5,-3,-1,1,3,5,7]); # 2 * Random([a_min .. a_max]) + 2;
+    aa23 := 4 * Random([a_min .. a_max]); # 4; #Random([a_min .. a_max]);
     a := [
         [0, aa12, aa13],
         [aa12, 0, aa23],
         [aa13, aa23, 0]
     ];
 
-    Print("\n--- Iteration ", iterations, " ---\n");
-    Print("Randomized values: k1 = ", k1, ", k2 = ", k2, ", k3 = ", k3, "\n");
-    Print(" a11 = ", a[1][1], ", a12 = ", a[1][2], ", a13 = ", a[1][3], "\n");
-    Print(" a21 = ", a[2][1], ", a22 = ", a[2][2], ", a23 = ", a[2][3], "\n");
-    Print(" a31 = ", a[3][1], ", a32 = ", a[3][2], ", a33 = ", a[3][3], "\n");
+    # Print("\n--- Iteration ", iterations, " ---\n");
+    # Print("Randomized values: k1 = ", k1, ", k2 = ", k2, ", k3 = ", k3, "\n");
+    # Print(" a11 = ", a[1][1], ", a12 = ", a[1][2], ", a13 = ", a[1][3], "\n");
+    # Print(" a21 = ", a[2][1], ", a22 = ", a[2][2], ", a23 = ", a[2][3], "\n");
+    # Print(" a31 = ", a[3][1], ", a32 = ", a[3][2], ", a33 = ", a[3][3], "\n");
 
     # Find the basis
     basis := FindSubgroupBasis(k1, k2, k3, a);
-    Print("Output from GAP for basis:\n", basis, "\n");
+    # Print("Output from GAP for basis:\n", basis, "\n");
 
     # --- NEW: Check if the basis is diagonal and skip if true ---
     if IsDiagonalMat(basis) then
-        Print("Basis is diagonal. Skipping this example...\n");
+    #    Print("Basis is diagonal. Skipping this example...\n");
         continue;
     fi;
     # ------------------------------------------------------------
@@ -123,12 +128,20 @@ while not found_false do
                         (2^k3 * b23) * (x2 * x3) );
 
         if not IsZero(check_val) then
-            Print("\n[FALSE] THE ELEMENT IS NON-ZERO MOD LCS WITH PARAMETERS:\n", param_string, "\n");
-            Print("Found [FALSE] element. Stopping.\n");
-            found_false := true;
-            break; # Break out of the basis for-loop
+            Print("\n--- Iteration ", iterations, " ---\n");
+            Print("Randomized values: k1 = ", k1, ", k2 = ", k2, ", k3 = ", k3, "\n");
+            Print(" a11 = ", a[1][1], ", a12 = ", a[1][2], ", a13 = ", a[1][3], "\n");
+            Print(" a21 = ", a[2][1], ", a22 = ", a[2][2], ", a23 = ", a[2][3], "\n");
+            Print(" a31 = ", a[3][1], ", a32 = ", a[3][2], ", a33 = ", a[3][3], "\n");
+            Print("\nTHE ELEMENT IS NON-ZERO MOD LCS WITH PARAMETERS:\n", param_string, "\n");
+            # Print("Found [FALSE] element. Stopping.\n");
+            successes := successes - 1;
+            if successes = 0 then
+                found_false := true;
+                break; # Break out of the basis for-loop
+            fi;
         else
-            Print("[TRUE] element is zero mod lcs with parameters: ", param_string, "\n");
+            # Print("[TRUE] element is zero mod lcs with parameters: ", param_string, "\n");
         fi;
     od;
 od;
