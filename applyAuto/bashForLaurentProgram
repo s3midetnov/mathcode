@@ -1,0 +1,16 @@
+#!/bin/bash
+
+INPUT_DIR="../artem/testCases"
+OUT_DIR="../artem/testCases"
+
+for i in $(seq 0 960); do
+  infile="${INPUT_DIR}/case${i}.txt"
+  outfile="${OUT_DIR}/case${i}_output.txt"
+
+  if [[ ! -f "$infile" ]]; then
+    echo "Skipping missing: case${i}.txt"
+    continue
+  fi
+
+  ./nq_g < "$infile" > "$outfile"
+done
