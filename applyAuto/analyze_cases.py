@@ -11,8 +11,8 @@ def analyze_cases():
         for ind, line in enumerate(f):
             aa, bb, cc, dd = [s.strip() for s in line.strip().split(",")]
             # print(f"a= {aa}, b= {bb}, c= {cc}, d= {dd}")
-            if len(make_smaller(aa, cc)[1]) <= 1 or len(make_smaller(cc, aa)[1]) <= 1:
-                continue
+            # if len(make_smaller(aa, cc)[1]) <= 1 or len(make_smaller(cc, aa)[1]) <= 1:
+            #     continue
             count_non_obviously_trivial_presentations += 1
             print(f"case {aa}, {cc} is non-obviously trivial")
     return count_non_obviously_trivial_presentations

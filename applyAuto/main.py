@@ -51,7 +51,9 @@ def trivial_abeliznization (aa : str, cc : str) -> bool:
     ec_x, ec_y = abelianize(cc)
     return (ea_x * ec_y - ec_x * ea_y == 1) or (ea_x * ec_y - ec_x * ea_y == -1)
 
-def generate_test_case(steps=20):
+def generate_test_case(steps=None):
+    if steps is None:
+        steps = random.randint(10, random.randint(20, 70))
     a_, b_, c_, d_, seq = random_iter(steps)
     aa = reduce_word(map_word1(a_))
     bb = reduce_word(map_word1(b_))
@@ -77,8 +79,49 @@ def generate_test_case(steps=20):
         print(f"Appended: {line}")
     else:
         print(f"Already exists: {line}")
+
+    seq_line = ",".join(seq)
+    seq_filename = os.path.join(os.path.dirname(__file__), "testCases", "test_sequences.txt")
+    with open(seq_filename, "a") as f:
+        f.write(f"{line} | {seq_line}\n")
+
     return aa, bb, cc, dd
 
+def generate_test_case2(steps=None):
+    if steps is None:
+        steps = random.randint(5, random.randint(20, 70))
+    a_, b_, c_, d_, seq = random_iter(steps)
+    aa = reduce_word(map_word2(a_))
+    bb = reduce_word(map_word2(b_))
+    cc = reduce_word(map_word2(c_))
+    dd = reduce_word(map_word2(d_))
+    if not trivial_abeliznization(aa, cc):
+        return
+
+    if len(aa) == 1 or len(cc) == 1 or len(aa) == 2 or len(cc) == 2:
+        return
+
+    line = f"{aa}, {bb}, {cc}, {dd}"
+    filename = os.path.join(os.path.dirname(__file__), "testCases", "test_cases.txt")
+
+    existing = set()
+    if os.path.exists(filename):
+        with open(filename, "r") as f:
+            existing = set(l.strip() for l in f if l.strip())
+
+    if line not in existing:
+        with open(filename, "a") as f:
+            f.write(line + "\n")
+        print(f"Appended: {line}")
+    else:
+        print(f"Already exists: {line}")
+
+    seq_line = ",".join(seq)
+    seq_filename = os.path.join(os.path.dirname(__file__), "testCases", "test_sequences.txt")
+    with open(seq_filename, "a") as f:
+        f.write(f"{line} | {seq_line}\n")
+
+    return aa, bb, cc, dd
 generate_test_case()
 
 sampling = True
@@ -118,9 +161,6 @@ if sampling:
 
     print(f"nontrivial element in {bucket_success} cases, \n trivial because no mixing in {no_3_bucket_fail} cases, \n trivial because basis in {bucket_fail} cases,\n  strict trivial in {strict_bucket_fail} cases")
 
-if __name__ == "__main__":
-    for _ in range(10_000):
-        generate_test_case(random.randint(5, random.randint(20, 70)))
 
 def write_as_product(a : str) -> str:
     parts = []
@@ -131,14 +171,9 @@ def write_as_product(a : str) -> str:
             parts.append(c)
     return " * ".join(parts)
 
-# with open(os.path.join(os.path.dirname(__file__), "testCases", "test_cases.txt"), "r") as f:
-#     for ind, line in enumerate(f):
-#         aa, bb, cc, dd = [s.strip() for s in line.strip().split(",")]
-#         # print(f"a= {aa}, b= {bb}, c= {cc}, d= {dd}")
-#         if aa == "" or cc == "":
-#             continue
-#         with open(os.path.join(os.path.dirname(__file__), "testCases", f"case{ind}.txt"), "w") as f2:
-#             presentation = f"< x, y | {write_as_product(aa)}, {write_as_product(cc)} >"
-#             print(presentation)
-#             f2.write(presentation)
-#         print(ind)
+
+if __name__ == "__main__":
+    # print(write_as_product("xYXYXYxYXyxyXY"))
+    # print(write_as_product("xYXYYXYxyyy"))
+    for _ in range(50_000):
+        generate_test_case()
