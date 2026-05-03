@@ -1,5 +1,7 @@
 import random
 import os
+from os.path import exists
+
 from pi1S2auto import *
 from freegrouplib import *
 
@@ -51,76 +53,122 @@ def trivial_abeliznization (aa : str, cc : str) -> bool:
     ec_x, ec_y = abelianize(cc)
     return (ea_x * ec_y - ec_x * ea_y == 1) or (ea_x * ec_y - ec_x * ea_y == -1)
 
-def generate_test_case(steps=20):
+# usually, sample with NON-TRIVIAL abelianization, meaning, the group is non-zero
+def generate_test_case(steps=20, preserve_generating_sequence = False, leave_one_commutator = True, leave_trivial_abelianization = False):
     a_, b_, c_, d_, seq = random_iter(steps)
     aa = reduce_word(map_word1(a_))
     bb = reduce_word(map_word1(b_))
     cc = reduce_word(map_word1(c_))
     dd = reduce_word(map_word1(d_))
-    if not trivial_abeliznization(aa, cc):
-        return
 
-    if len(aa) == 1 or len(cc) == 1 or len(aa) == 2 or len(cc) == 2:
-        return
+    if len(aa) <= 3 or len(bb) <= 3 or len(cc) <= 3 or len(dd) <= 3:
+        return aa, bb, cc, dd
+    # print(leave_trivial_abelianization)
 
-    line = f"{aa}, {bb}, {cc}, {dd}"
-    filename = os.path.join(os.path.dirname(__file__), "testCases", "test_cases.txt")
+    # Only keep cases where all four words lie in the commutator subgroup (γ_2)
+    if leave_one_commutator and (any(abelianize(w) == (0, 0) for w in [aa, bb, cc, dd])):
+        line = f"{aa}, {bb}, {cc}, {dd}"
+        filename = os.path.join(os.path.dirname(__file__), "testCases", "one_trivial_projection.txt")
+        existing = set()
+        if os.path.exists(filename):
+            with open(filename, "r") as f:
+                existing = set(l.strip() for l in f if l.strip())
 
-    existing = set()
-    if os.path.exists(filename):
-        with open(filename, "r") as f:
-            existing = set(l.strip() for l in f if l.strip())
+        if line not in existing:
+            with open(filename, "a") as f:
+                f.write(line + "\n")
+            print(f"Appended: {line}")
+        else:
+            print(f"Already exists: {line}")
+        return aa, bb, cc, dd
 
-    if line not in existing:
-        with open(filename, "a") as f:
-            f.write(line + "\n")
-        print(f"Appended: {line}")
-    else:
-        print(f"Already exists: {line}")
+        # xyXXyxYY, yyXYX, yXyXYxxxYX, xyXXXyxY
+        print("="*50)
+        print("="*50)
+        print("="*50)
+
+
+    if 0 == 1:
+        address = "trivial_abelianization.txt" if leave_trivial_abelianization else "test_cases.txt"
+
+        if leave_trivial_abelianization and not trivial_abeliznization(aa, cc):
+            return
+
+        if leave_trivial_abelianization:
+            a = cyclic_reduce(aa)
+            b = cyclic_reduce(bb)
+            c = cyclic_reduce(cc)
+            d = cyclic_reduce(dd)
+            if len(a) <= 3 or len(b) <= 3 or len(c) <= 3 or len(d) <= 3:
+                return
+            if is_one_among_rest(aa) or is_one_among_rest(cc):
+                return
+            aa = a
+            bb = b
+            cc = c
+            dd = d
+
+        line = f"{aa}, {bb}, {cc}, {dd}"
+        filename = os.path.join(os.path.dirname(__file__), "testCases", address)
+
+        existing = set()
+        if os.path.exists(filename):
+            with open(filename, "r") as f:
+                existing = set(l.strip() for l in f if l.strip())
+
+        if line not in existing:
+            with open(filename, "a") as f:
+                f.write(line + "\n")
+            print(f"Appended to: {line}")
+        else:
+            print(f"Already exists: {line}")
+        return aa, bb, cc, dd
     return aa, bb, cc, dd
 
-generate_test_case()
+# generate_test_case()
 
-sampling = True
-if sampling:
-
-    bucket_success = 0 # if it is /= 0
-    bucket_fail = 0
-    strict_bucket_fail = 0
-    no_3_bucket_fail = 0
-
-    for size in range(5, 30, 20):
-    #     print("Size:", size)
-        for _ in range(20):
-            x = random_iter(size)
-            aa = reduce_word(map_word1(x[0]))
-            # print('a : ', aa)
-            bb = reduce_word(map_word1(x[1]))
-            # print('b : ', bb)
-            cc = reduce_word(map_word1(x[2]))
-            # print('c : ', cc)
-            dd = reduce_word(map_word1(x[3]))
-
-            bb_ = delete_subwords(aa, cc, bb)
-            dd_ = delete_subwords(aa, cc, dd)
-            if bb_ or dd_:
-                bucket_success += 1
-                print(' a= ', aa, '\n b= ', bb_, '\n c= ', cc, '\n d= ', dd_, x[4])
-                print("-----------------------")
-            elif not ('3' in x[4] or '3n' in x[4]):
-                no_3_bucket_fail += 1
-            elif len(aa) + len(cc) > 2:
-                strict_bucket_fail += 1
-                print(x[4])
-                print(' a= ', aa, '\n b= ', bb_, '\n c= ', cc, '\n d= ', dd_)
-            else:
-                bucket_fail += 1
-
-    print(f"nontrivial element in {bucket_success} cases, \n trivial because no mixing in {no_3_bucket_fail} cases, \n trivial because basis in {bucket_fail} cases,\n  strict trivial in {strict_bucket_fail} cases")
+# sampling = False
+# if sampling:
+#
+#     bucket_success = 0 # if it is /= 0
+#     bucket_fail = 0
+#     strict_bucket_fail = 0
+#     no_3_bucket_fail = 0
+#
+#     for size in range(5, 30, 20):
+#     #     print("Size:", size)
+#         for _ in range(20):
+#             x = random_iter(size)
+#             aa = reduce_word(map_word1(x[0]))
+#             # print('a : ', aa)
+#             bb = reduce_word(map_word1(x[1]))
+#             # print('b : ', bb)
+#             cc = reduce_word(map_word1(x[2]))
+#             # print('c : ', cc)
+#             dd = reduce_word(map_word1(x[3]))
+#
+#             bb_ = delete_subwords(aa, cc, bb)
+#             dd_ = delete_subwords(aa, cc, dd)
+#             if bb_ or dd_:
+#                 bucket_success += 1
+#                 print(' a= ', aa, '\n b= ', bb_, '\n c= ', cc, '\n d= ', dd_, x[4])
+#                 print("-----------------------")
+#             elif not ('3' in x[4] or '3n' in x[4]):
+#                 no_3_bucket_fail += 1
+#             elif len(aa) + len(cc) > 2:
+#                 strict_bucket_fail += 1
+#                 print(x[4])
+#                 print(' a= ', aa, '\n b= ', bb_, '\n c= ', cc, '\n d= ', dd_)
+#             else:
+#                 bucket_fail += 1
+#
+#     print(f"nontrivial element in {bucket_success} cases, \n trivial because no mixing in {no_3_bucket_fail} cases, \n trivial because basis in {bucket_fail} cases,\n  strict trivial in {strict_bucket_fail} cases")
 
 if __name__ == "__main__":
     for _ in range(10_000):
-        generate_test_case(random.randint(5, random.randint(20, 70)))
+        aa, bb, cc, dd = generate_test_case(random.randint(20, random.randint(20, 60)))
+        if reduce_word(aa + bb + inverse_word(aa) + inverse_word(bb) + cc + dd + inverse_word(cc) + inverse_word(dd))!= "":
+            print(aa, bb, cc, dd)
 
 def write_as_product(a : str) -> str:
     parts = []

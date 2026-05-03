@@ -1,11 +1,12 @@
+from automorphisms import aut_map
 
 # Free group reduction (canceling xx^{-1} and x^{-1}x)
-
 def reduce_word(word):
     stack = []
     inverse = {"a":"A","b":"B","c":"C","d":"D","x":"X","y":"Y",
                "X":"x","Y":"y",
-               "A":"a","B":"b","C":"c","D":"d", 'x' : 'X', 'y' : 'Y', 'X' : 'x', 'Y' : 'y'}
+               "A":"a","B":"b","C":"c","D":"d", 'z' : 'Z', 'Z' : 'z', 'X' : 'x', 'Y' : 'y',
+                'e' : 'E','f' : 'F','F' : 'f', 'E' : 'e'}
     for x in word:
         if stack and inverse[x] == stack[-1]:
             stack.pop()
@@ -16,7 +17,8 @@ def reduce_word(word):
 
 def inverse_word(word):
     inverse = {"a": "A", "b": "B", "c": "C", "d": "D",
-               "A": "a", "B": "b", "C": "c", "D": "d", 'x' : 'X', 'y' : 'Y', 'X' : 'x', 'Y' : 'y'}
+               "A": "a", "B": "b", "C": "c", "D": "d", 'x' : 'X', 'y' : 'Y', 'X' : 'x', 'Y' : 'y',
+               'e' : 'E','f' : 'F','F' : 'f', 'E' : 'e', 'z' : 'Z', 'Z' : 'z'}
     # Reverse the word and replace each letter by its inverse
     return "".join(inverse[ch] for ch in reversed(word))
 
@@ -42,6 +44,12 @@ def inverse_aut(aut):
                 aut_inv[g] = k
     return aut_inv
 
+
+def comm(a, b):
+    return inverse_word(a) + inverse_word(b) + a + b
+
+def comm2(a, b):
+    return a + b + inverse_word(a) + inverse_word(b)
 
 def cyclic_reduce(word: str) -> str:
     """
@@ -76,6 +84,23 @@ def is_one_among_rest(word: str) -> bool:
 
     return x_count == 1 or y_count == 1
 
+
+# Apply a substitution (automorphism) to a word
+def apply_aut(word, aut):
+    return reduce_word("".join(aut[ch] for ch in word))
+
+
+def apply_sequence(word, sequence):
+    for aut_key in sequence:
+        aut = aut_map[aut_key]
+        word = apply_aut(word, aut)
+    return word
+
+
+def abelianize(word : str):
+    e_x = word.count('x') - word.count('X')
+    e_y = word.count('y') - word.count('Y')
+    return e_x, e_y
 
 
 if __name__ == "__main__":
