@@ -19,24 +19,12 @@ aut4 = id_aut.copy(); aut4.update({"d":"dc","D":"CD"})
 
 aut4n = id_aut.copy(); aut4n.update({"d":"dC","D":"cD"})
 
-# fifth: b -> (Ad)b, c -> (Ad)c
-# aut5 = id_aut.copy()
-# aut5.update({"b":"Adb", "B":"BDa",
-#               "c":"Adc", "C":"CDa"})
-#
-# aut5n = id_aut.copy()
-# aut5n.update({"b":"Dab", "B":"BAd",
-#               "c":"Dac", "C":"CAd"})
-#
-# aut6 = id_aut.copy(); aut6.update({"c":"Dec","f":"Def",
-#                                    "C": "CEd", "F" : "FEd"})
-#
-#
-# aut6n = id_aut.copy(); aut6n.update({"c":"Edc","f":"Edf",
-#                                    "C": "CDe", "F" : "FDe"})
-#
-#
-# aut5: b, c mapped. e, f conjugated by (dA)
+# 𝑥₁
+# 𝑋₁𝑥₄𝑥₂
+# 𝑋₁𝑥₄𝑥₃
+# 𝑥₄
+# 𝑥₄𝑋₁𝑥₅𝑥₁𝑋₄
+# 𝑥₄𝑋₁𝑥₆𝑥₁𝑋₄
 aut5 = id_aut.copy()
 aut5.update({
     "b": "Adb", "B": "BDa",
@@ -45,25 +33,27 @@ aut5.update({
     "f": "dAfaD", "F": "dAFaD"
 })
 
-# aut5n: inverse of aut5. Conjugates e, f by (aD)
 aut5n = id_aut.copy()
 aut5n.update({
     "b": "Dab", "B": "BAd",
     "c": "Dac", "C": "CAd",
-    "e": "aDedA", "E": "aDEdA",  # Fixed suffix: dA instead of Ad
-    "f": "aDfdA", "F": "aDFdA"   # Fixed suffix: dA instead of Ad
+    "e": "aDedA", "E": "aDEdA",
+    "f": "aDfdA", "F": "aDFdA"
 })
-
-# aut6: c, f mapped. a, b conjugated by (De)
+# 𝑋₄𝑥₅𝑥₁𝑋₅𝑥₄
+# 𝑋₄𝑥₅𝑥₂𝑋₅𝑥₄
+# 𝑋₄𝑥₅𝑥₃
+# 𝑥₄
+# 𝑥₅
+# 𝑋₄𝑥₅𝑥₆
 aut6 = id_aut.copy()
 aut6.update({
-    "c": "Dec", "C": "CEd",
-    "f": "Def", "F": "FEd",
     "a": "DeaEd", "A": "DeAEd",
-    "b": "DebEd", "B": "DeBEd"
+    "b": "DebEd", "B": "DeBEd",
+    "c": "Dec", "C": "CEd",
+    "f": "Def", "F": "FEd"
 })
 
-# aut6n: inverse of aut6. Conjugates a, b by (Ed)
 aut6n = id_aut.copy()
 aut6n.update({
     "c": "Edc", "C": "CDe",
