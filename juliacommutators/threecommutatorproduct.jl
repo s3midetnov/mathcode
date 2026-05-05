@@ -76,6 +76,8 @@ FE3 = FreeGroupEndomorphism{3}
 #     'f': 'x', 'F': 'X',
 # }
 Q = FreeGroupEndomorphism{6}([1],[2],[3],[3],[2],[1])  # not sure of exact constructor — see note below
+Q1 = FreeGroupEndomorphism{6}([1], [2], [2], [1], [3], [3])
+Q2 = FreeGroupEndomorphism{6}([1], [1], [2], [3], [3], [2])
 
 commutator(u, v) = u * v * inv(u) * inv(v)
 # gens = [((A1,B1,B2,G1).|>positive)...,((A1,B1,B2,G1).|>inv.|>positive)...,G1^2|>positive,C1,C1i,Y3,Y3i]
@@ -99,28 +101,43 @@ gens_2_small = [FreeWord{6}([1]), FreeWord{6}([2])]
 #     end
 # end
 false && begin
+    println("enumerating the ball")
+    seen = Set{String}()
+    cntr = Ref(0)
     open("threeRelators.txt", "w") do file
-        for g in ball(gens6, 3)
-            images = [Q(g(FreeWord{6}([i]))) for i in 1:6]
-            #  commutator(images[1], images[2]) * commutator(images[3], images[4]) * commutator(images[5], images[6]) == 1
-            println(file, "$(images[1]), $(images[2]), $(images[3]), $(images[4]), $(images[5]), $(images[6])")
-            println(homo32([1], [2], [2])(images[1]))
-        end
-    end
-end
-
-true && begin
-    open("threeRelators.txt", "w") do file
-        for g in ball(gens6, 3)
-            for im1 in ball(gens_2_small, 2)
-                for im2 in ball(gens_2_small, 2)
-                    for im3 in ball(gens_2_small, 2)
-                        images = [homo32(im1, im2, im3)(Q(g(FreeWord{6}([i])))) for i in 1:6]
-                        #  commutator(images[1], images[2]) * commutator(images[3], images[4]) * commutator(images[5], images[6]) == 1
-                        println(file, "$(images[1]), $(images[2]), $(images[3]), $(images[4]), $(images[5]), $(images[6])")
-                    end
-                end
+        for g in ball(gens6, 6)
+            for q in [Q, Q1, Q2]
+                qimages = [q(g(FreeWord{6}([i]))) for i in 1:6]
+                any(w -> length(w) <= 3, qimages) && continue
+                line = "$(qimages[1]), $(qimages[2]), $(qimages[3]), $(qimages[4]), $(qimages[5]), $(qimages[6])"
+                line in seen && continue
+                push!(seen, line)
+                println(file, line)
+                cntr[] += 1
             end
         end
     end
+    println("encountered $(cntr[]) examples")
+end
+
+true && begin
+    println("enumerating random long elements")
+    seen = isfile("threeRelators.txt") ? Set(eachline("threeRelators.txt")) : Set{String}()
+    cntr = Ref(0)
+    open("threeRelators.txt", "w") do file
+        for _ in 1:10_000
+            n = rand(10:rand(10:30))
+            g = foldl(*, rand(gens6, n))
+            for q in [Q, Q1, Q2]
+                qimages = [q(g(FreeWord{6}([i]))) for i in 1:6]
+                any(w -> length(w) <= 3, qimages) && continue
+                line = "$(qimages[1]), $(qimages[2]), $(qimages[3]), $(qimages[4]), $(qimages[5]), $(qimages[6])"
+                line in seen && continue
+                push!(seen, line)
+                println(file, line)
+                cntr[] += 1
+            end
+        end
+    end
+    println("encountered $(cntr[]) examples")
 end
